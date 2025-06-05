@@ -41,6 +41,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   name                = var.vm_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
+  disable_password_authentication = false # change this to ssh later
   size                = "Standard_D8s_v3"
 
   admin_username = var.admin_username
