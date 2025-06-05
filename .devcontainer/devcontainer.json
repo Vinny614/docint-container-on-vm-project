@@ -1,0 +1,17 @@
+{
+    "name": "Vinnys Dev Container",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "hashicorp.terraform",
+        "ms-azuretools.vscode-azureterraform",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.azurecli"
+    ],
+    "postCreateCommand": "terraform --version && az --version && docker --version && node --version || python3 --version",
+    "remoteUser": "vscode"
+}
