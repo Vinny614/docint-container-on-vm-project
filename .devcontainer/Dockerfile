@@ -1,11 +1,15 @@
 # Use the official Codespaces base image
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-focal
 
-# Install Terraform
-RUN curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add - \
-    && apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com focal main" \
-    && apt-get update \
-    && apt-get install -y terraform
+Install Terraform
+RUN apt-get update && apt-get install -y \
+    software-properties-common \
+    curl \
+    gnupg \
+    lsb-release && \
+    curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
+    apt-get update && apt-get install -y terraform
 
 # Install Azure CLI
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
