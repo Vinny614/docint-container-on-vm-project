@@ -12,3 +12,12 @@ output "app_service_default_hostname" {
   description = "The default hostname of the Linux Web App"
   value       = azurerm_linux_web_app.app.default_hostname
 }
+
+output "docint_endpoint" {
+  value = azurerm_cognitive_account.docint.endpoint
+}
+
+output "docint_api_key" {
+  value  = azurerm_cognitive_account.docint.primary_access_key
+  sensitive = true
+}

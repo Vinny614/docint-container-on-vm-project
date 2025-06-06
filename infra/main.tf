@@ -64,6 +64,18 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
+resource "azurerm_cognitive_account" "docint" {
+  name                = var.docint_account_name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  kind                = "FormRecognizer"
+  sku_name            = "S0"
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
 resource "azurerm_service_plan" "asp" {
   name                = var.app_service_plan_name
   location            = azurerm_resource_group.rg.location

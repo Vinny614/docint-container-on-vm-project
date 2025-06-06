@@ -53,3 +53,8 @@ variable "app_service_name" {
   description = "The name of the App Service"
   type        = string
 }
+
+variable "docint_account_name" {
+  description = "The name of the Azure Document Intelligence account"
+  type        = string
+}
