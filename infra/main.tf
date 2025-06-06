@@ -38,11 +38,11 @@ resource "azurerm_network_interface" "nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = var.vm_name
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  disable_password_authentication = false # change this to ssh later
-  size                = "Standard_D8s_v3"
+  name                            = var.vm_name
+  resource_group_name             = azurerm_resource_group.rg.name
+  location                        = azurerm_resource_group.rg.location
+  disable_password_authentication = false
+  size                            = "Standard_D8s_v3"
 
   admin_username = var.admin_username
   admin_password = var.admin_password
@@ -62,6 +62,20 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "18.04-LTS"
     version   = "latest"
   }
+
+  custom_data = base64encode(<<EOF
+#!/bin/bash
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg lsb-release
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu focal stable" > /etc/apt/sources.list.d/docker.list
+apt-get update
+apt-get install -y docker-ce docker-ce-cli containerd.io
+systemctl enable docker
+systemctl start docker
+usermod -aG docker azureuser
+EOF
+  )
 }
 
 resource "azurerm_cognitive_account" "docint" {
