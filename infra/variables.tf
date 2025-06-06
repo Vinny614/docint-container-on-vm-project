@@ -56,5 +56,6 @@ variable "app_service_name" {
 
 variable "docint_account_name" {
   description = "The name of the Azure Document Intelligence account"
+  default = "vinnysdocintacct"
   type        = string
 }
