@@ -64,28 +64,27 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
-resource "azurerm_app_service_plan" "asp" {
+resource "azurerm_service_plan" "asp" {
   name                = var.app_service_plan_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  sku {
-    tier = "Basic"
-    size = "B1"
-  }
+  os_type             = "Linux"
+  sku_name            = "B1"
 }
 
 resource "azurerm_linux_web_app" "app" {
   name                = var.app_service_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  service_plan_id     = azurerm_app_service_plan.asp.id
-
+  service_plan_id     = azurerm_service_plan.asp.id
+  depends_on          = [azurerm_service_plan.asp]
+  https_only          = true
   site_config {
+    minimum_tls_version = "1.2"
     application_stack {
       python_version = "3.11"
     }
   }
-
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
   }
