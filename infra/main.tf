@@ -81,7 +81,7 @@ resource "azurerm_app_service" "app" {
   app_service_plan_id = azurerm_app_service_plan.asp.id
 
   site_config {
-    linux_fx_version = "PYTHON|3.8"
+    linux_fx_version = "PYTHON|3.11"
   }
 
   app_settings = {
