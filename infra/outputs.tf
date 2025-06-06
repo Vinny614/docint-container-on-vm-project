@@ -9,6 +9,6 @@ output "vm_public_ip" {
 }
 
 output "app_service_default_hostname" {
-  description = "The default hostname of the App Service"
-  value       = azurerm_app_service.app.default_site_hostname
+  description = "The default hostname of the Linux Web App"
+  value       = azurerm_linux_web_app.app.default_hostname
 }
