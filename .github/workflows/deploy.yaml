@@ -1,0 +1,22 @@
+name: Deploy Document Intelligence Container
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy container to VM
+      run: |
+        chmod +x container/run-container.sh
+        ./container/run-container.sh ${{ secrets.VM_IP }} ${{ secrets.DOCINT_ENDPOINT }} ${{ secrets.DOCINT_API_KEY }}

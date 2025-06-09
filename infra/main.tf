@@ -1,3 +1,5 @@
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
@@ -169,4 +171,41 @@ resource "azurerm_linux_web_app" "app" {
   app_settings = {
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
   }
+}
+
+resource "azurerm_key_vault" "docint_kv" {
+  name                        = "${var.resource_group_name}-kv"
+  location                    = azurerm_resource_group.rg.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  sku_name                    = "standard"
+  purge_protection_enabled    = true
+}
+
+resource "azurerm_key_vault_secret" "docint_api_key" {
+  name         = "DocIntApiKey"
+  value        = azurerm_cognitive_account.docint.primary_access_key
+  key_vault_id = azurerm_key_vault.docint_kv.id
+}
+
+resource "azurerm_key_vault_secret" "docint_endpoint" {
+  name         = "DocIntEndpoint"
+  value        = azurerm_cognitive_account.docint.endpoint
+  key_vault_id = azurerm_key_vault.docint_kv.id
+}
+
+resource "azurerm_key_vault_access_policy" "terraform_user" {
+  key_vault_id = azurerm_key_vault.docint_kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
+
+  secret_permissions = ["get", "set", "list", "delete"]
+}
+
+resource "azurerm_key_vault_access_policy" "vm_access" {
+  key_vault_id = azurerm_key_vault.docint_kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_linux_virtual_machine.vm.identity[0].principal_id
+
+  secret_permissions = ["get", "list"]
 }
