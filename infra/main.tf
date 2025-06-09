@@ -104,6 +104,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
   admin_username = var.admin_username
   admin_password = var.admin_password
 
+  identity {
+  type = "SystemAssigned"
+  }
+
   network_interface_ids = [
     azurerm_network_interface.nic.id,
   ]
@@ -199,7 +203,7 @@ resource "azurerm_key_vault_access_policy" "terraform_user" {
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = data.azurerm_client_config.current.object_id
 
-  secret_permissions = ["get", "set", "list", "delete"]
+  secret_permissions = ["Get", "Set", "List", "Delete"]
 }
 
 resource "azurerm_key_vault_access_policy" "vm_access" {
@@ -207,5 +211,7 @@ resource "azurerm_key_vault_access_policy" "vm_access" {
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = azurerm_linux_virtual_machine.vm.identity[0].principal_id
 
-  secret_permissions = ["get", "list"]
+  secret_permissions = ["Get", "List"]
+
+  depends_on = [azurerm_linux_virtual_machine.vm]
 }
