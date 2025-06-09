@@ -26,3 +26,7 @@ output "docint_api_key" {
   value  = azurerm_cognitive_account.docint.primary_access_key
   sensitive = true
 }
+
+output "vm_identity" {
+  value = azurerm_linux_virtual_machine.vm.identity
+}
